@@ -31,6 +31,9 @@ class Auth0Backend(object):
                 return
 
         user_id = kwargs.get('user_id', None)
+        user_email = kwargs.get('email', None)
+        if not user_email:
+            user_email = kwargs.get('upn', '')
 
         if not user_id:
             raise ValueError(_('user_id can\'t be blank!'))
@@ -44,7 +47,7 @@ class Auth0Backend(object):
         try:
             return UserModel.objects.get(username__iexact=username)
         except UserModel.DoesNotExist:
-            return UserModel.objects.create(username=username)
+            return UserModel.objects.create(username=username, email=user_email)
 
     # noinspection PyProtectedMember
     def get_user(self, user_id):
